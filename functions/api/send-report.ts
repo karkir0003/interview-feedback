@@ -104,8 +104,8 @@ export const onRequestPost = async (context: {
       });
     }
 
-    const appUrl = env.APP_URL || env.VITE_APP_URL || 'https://mocksignal.karkir0003.workers.dev';
-    const reportUrl = `${appUrl}/r/${publicToken}`;
+    const origin = new URL(request.url).origin;
+    const reportUrl = `${origin}/r/${publicToken}`;
     const resendApiKey = env.RESEND_API_KEY;
 
     if (!resendApiKey) {
