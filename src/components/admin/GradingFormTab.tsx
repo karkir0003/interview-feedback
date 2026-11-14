@@ -324,11 +324,17 @@ export function GradingFormTab({
 
       // Step 5: Send email report via Cloudflare Pages Function
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+        };
+        if (session?.access_token) {
+          headers['Authorization'] = `Bearer ${session.access_token}`;
+        }
+
         const sendRes = await fetch('/api/send-report', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers,
           body: JSON.stringify({
             evaluationId: evalData.id,
             candidateEmail: normalizedEmail,
@@ -342,6 +348,9 @@ export function GradingFormTab({
         if (!sendRes.ok) {
           const errResp = await sendRes.json().catch(() => ({}));
           console.warn('Email dispatch warning:', errResp);
+          if (errResp && typeof errResp === 'object' && 'error' in errResp) {
+            showError('Email delivery notice', String(errResp.error));
+          }
         }
       } catch (emailErr) {
         console.warn('Failed to call send-report endpoint:', emailErr);

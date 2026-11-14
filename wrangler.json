@@ -7,6 +7,12 @@
     "directory": "./dist",
     "binding": "ASSETS",
     "not_found_handling": "single-page-application"
+  },
+  "vars": {
+    "SUPABASE_URL": "https://igazswhnqsoodtqjeahg.supabase.co",
+    "SUPABASE_ANON_KEY": "sb_publishable_vcTAsD-hJ5Cn_-Hr9z2rkQ_yDmg1kKU",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_vcTAsD-hJ5Cn_-Hr9z2rkQ_yDmg1kKU",
+    "VITE_APP_URL": "https://mocksignal.karkir0003.workers.dev"
   }
 }
 

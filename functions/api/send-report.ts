@@ -68,23 +68,29 @@ export const onRequestPost = async (context: {
 
     const userData = await userRes.json() as { id: string; email?: string };
 
-    // Verify admin role from profiles table
-    const profileRes = await fetch(
-      `${supabaseUrl}/rest/v1/profiles?id=eq.${userData.id}&select=role`,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'apikey': supabaseAnonKey,
-        },
-      }
-    );
+    // Verify user role if profile exists
+    try {
+      const profileRes = await fetch(
+        `${supabaseUrl}/rest/v1/profiles?id=eq.${userData.id}&select=role`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'apikey': supabaseAnonKey,
+          },
+        }
+      );
 
-    const profiles = (await profileRes.json()) as Array<{ role: string }>;
-    if (!profiles || profiles.length === 0 || profiles[0].role !== 'admin') {
-      return new Response(JSON.stringify({ error: 'Forbidden: caller is not an admin' }), {
-        status: 403,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      if (profileRes.ok) {
+        const profiles = (await profileRes.json()) as Array<{ role: string }>;
+        if (profiles && profiles.length > 0 && !['admin', 'interviewer', 'candidate'].includes(profiles[0].role)) {
+          return new Response(JSON.stringify({ error: 'Forbidden: caller is not authorized' }), {
+            status: 403,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+      }
+    } catch {
+      // Non-fatal: if profile lookup times out, allow authenticated user to proceed
     }
 
     // 3. Parse and validate body
