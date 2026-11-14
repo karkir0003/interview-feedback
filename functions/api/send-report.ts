@@ -95,7 +95,7 @@ export const onRequestPost = async (context: {
 
     // 3. Parse and validate body
     const body = (await request.json()) as Partial<SendReportPayload>;
-    const { evaluationId, candidateEmail, candidateName, interviewTypeName, questionTitle, publicToken } = body;
+    const { candidateEmail, candidateName, interviewTypeName, questionTitle, publicToken } = body;
 
     if (!candidateEmail || !publicToken || !candidateName) {
       return new Response(JSON.stringify({ error: 'Missing required payload parameters' }), {
@@ -164,8 +164,8 @@ export const onRequestPost = async (context: {
               </p>
             </div>
             <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 28px 0;" />
-            <p style="font-size: 12px; color: #94a3b8; margin: 0;">
-              Evaluation Reference: ${evaluationId || publicToken} • Direct URL: ${reportUrl}
+            <p style="font-size: 12px; color: #94a3b8; margin: 0; line-height: 1.5; word-break: break-all;">
+              Direct link: <a href="${reportUrl}" style="color: #64748b; text-decoration: underline;">${reportUrl}</a>
             </p>
           </div>
         `,
