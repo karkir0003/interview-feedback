@@ -51,76 +51,52 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 - **Production Build**: `yarn build`
 - **Preview Build**: `yarn preview`
 
-### Supabase CLI Commands
-For local Supabase development and automated TypeScript type generation:
-- **Generate DB TypeScript Types**: `yarn db:types`
-- **Start Local Supabase (Docker)**: `yarn db:start`
-- **Stop Local Supabase**: `yarn db:stop`
-- **Check Status / URLs**: `yarn db:status`
-- **Reset Database & Run Migrations**: `yarn db:reset`
-- **Push Migrations to Remote**: `yarn db:push`
-- **Pull Remote Schema Changes**: `yarn db:pull`
+## Google Analytics 4 (GA4) Tracking
 
-## Deployment (Cloudflare Pages)
+The platform includes headless, privacy-first Google Analytics 4 tracking via [`src/lib/analytics.ts`](src/lib/analytics.ts) and [`src/components/common/AnalyticsTracker.tsx`](src/components/common/AnalyticsTracker.tsx).
 
-This project is built for **Cloudflare Pages** (with Pages Functions for Resend emails):
+### Setup
+1. In [analytics.google.com](https://analytics.google.com), create a Web stream or copy your existing Measurement ID (`G-XXXXXXXXXX`).
+2. Add your Measurement ID:
+   - **Local Dev**: Add `VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX` to your `.env` file.
+   - **Production**: Add `VITE_GA_MEASUREMENT_ID` to your GitHub Repository Secrets.
 
-### Option A: Zero-Config Cloudflare Dashboard (Recommended)
-1. Go to your [Cloudflare Dashboard](https://dash.cloudflare.com) > **Compute (Workers & Pages)** > **Create application** > **Pages** > **Connect to Git**.
-2. Select your `interview-feedback` repository.
-3. Build Settings:
-   - **Framework preset**: `Vite`
-   - **Build command**: `yarn build`
-   - **Build output directory**: `dist`
-4. Add Environment Variables under **Settings > Environment variables**:
-   - `VITE_SUPABASE_URL`: Your Supabase Project URL
-   - `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon Key
-   - `VITE_APP_URL`: Your production domain (e.g. `https://mocksignal.com`)
-   - `RESEND_API_KEY`: Your Resend API key for emailing scorecards
-   - `VITE_GA_MEASUREMENT_ID`: (Optional) Google Analytics Measurement ID
-5. Save and Deploy! Cloudflare automatically handles static asset hosting, SPA routing, and compiles `functions/api/send-report.ts` as a serverless edge function.
+If `VITE_GA_MEASUREMENT_ID` is omitted or empty, Google Analytics remains gracefully disabled with zero runtime overhead, script injections, or network requests.
 
-### Option B: Automated CI/CD (GitHub Actions)
-Pushing to `main` triggers `.github/workflows/deploy.yml`. Ensure repository secrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `RESEND_API_KEY` are configured in GitHub Settings > Secrets.
+### Tracked Metrics & Events
+| Event Name | Trigger | Payload Parameters |
+| :--- | :--- | :--- |
+| **`page_view`** | Automatic on every client-side route navigation (`/`, `/admin`, `/history`, `/r/:token`) | `page_path`, `page_title`, `page_location` |
+| **`evaluation_published`** | When an interviewer publishes and shares an evaluation | `track` (e.g. `DSA / LeetCode`), `verdict` (`Hire`, etc.) |
+| **`scorecard_viewed`** | When a candidate opens their public scorecard link (`/r/:token`) | `track`, `verdict` |
+| **`scorecard_link_copied`** | When a user clicks "Copy Link" on a scorecard | `track` |
+| **`question_added_to_bank`**| When an interviewer or admin adds a new reusable question | `track` |
+| **`rubric_calibrated`** | When an admin updates an axis benchmark definition in the studio | `axis` |
 
-### Option C: CLI Deploy
-```bash
-yarn deploy
-```
+### How to Verify
+Open your browser Developer Tools Console or Google Analytics **Reports > Realtime** (or **DebugView**) to inspect live events firing as you navigate and grade mock interviews.
 
-### Supabase CLI Commands
-For local Supabase development and automated TypeScript type generation:
-- **Generate DB TypeScript Types**: `yarn db:types`
-- **Start Local Supabase (Docker)**: `yarn db:start`
-- **Stop Local Supabase**: `yarn db:stop`
-- **Check Status / URLs**: `yarn db:status`
-- **Reset Database & Run Migrations**: `yarn db:reset`
-- **Push Migrations to Remote**: `yarn db:push`
-- **Pull Remote Schema Changes**: `yarn db:pull`
+## Google Analytics 4 (GA4) Tracking
 
-## Deployment (Cloudflare Pages)
+The platform includes headless, privacy-first Google Analytics 4 tracking via [`src/lib/analytics.ts`](src/lib/analytics.ts) and [`src/components/common/AnalyticsTracker.tsx`](src/components/common/AnalyticsTracker.tsx).
 
-This project is built for **Cloudflare Pages** (with Pages Functions for Resend emails):
+### Setup
+1. In [analytics.google.com](https://analytics.google.com), create a Web stream or copy your existing Measurement ID (`G-XXXXXXXXXX`).
+2. Add your Measurement ID:
+   - **Local Dev**: Add `VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX` to your `.env` file.
+   - **Production**: Add `VITE_GA_MEASUREMENT_ID` to your GitHub Repository Secrets.
 
-### Option A: Zero-Config Cloudflare Dashboard (Recommended)
-1. Go to your [Cloudflare Dashboard](https://dash.cloudflare.com) > **Compute (Workers & Pages)** > **Create application** > **Pages** > **Connect to Git**.
-2. Select your `interview-feedback` repository.
-3. Build Settings:
-   - **Framework preset**: `Vite`
-   - **Build command**: `yarn build`
-   - **Build output directory**: `dist`
-4. Add Environment Variables under **Settings > Environment variables**:
-   - `VITE_SUPABASE_URL`: Your Supabase Project URL
-   - `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon Key
-   - `VITE_APP_URL`: Your production domain (e.g. `https://mocksignal.com`)
-   - `RESEND_API_KEY`: Your Resend API key for emailing scorecards
-   - `VITE_GA_MEASUREMENT_ID`: (Optional) Google Analytics Measurement ID
-5. Save and Deploy! Cloudflare automatically handles static asset hosting, SPA routing, and compiles `functions/api/send-report.ts` as a serverless edge function.
+If `VITE_GA_MEASUREMENT_ID` is omitted or empty, Google Analytics remains gracefully disabled with zero runtime overhead, script injections, or network requests.
 
-### Option B: Automated CI/CD (GitHub Actions)
-Pushing to `main` triggers `.github/workflows/deploy.yml`. Ensure repository secrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `RESEND_API_KEY` are configured in GitHub Settings > Secrets.
+### Tracked Metrics & Events
+| Event Name | Trigger | Payload Parameters |
+| :--- | :--- | :--- |
+| **`page_view`** | Automatic on every client-side route navigation (`/`, `/admin`, `/history`, `/r/:token`) | `page_path`, `page_title`, `page_location` |
+| **`evaluation_published`** | When an interviewer publishes and shares an evaluation | `track` (e.g. `DSA / LeetCode`), `verdict` (`Hire`, etc.) |
+| **`scorecard_viewed`** | When a candidate opens their public scorecard link (`/r/:token`) | `track`, `verdict` |
+| **`scorecard_link_copied`** | When a user clicks "Copy Link" on a scorecard | `track` |
+| **`question_added_to_bank`**| When an interviewer or admin adds a new reusable question | `track` |
+| **`rubric_calibrated`** | When an admin updates an axis benchmark definition in the studio | `axis` |
 
-### Option C: CLI Deploy
-```bash
-yarn deploy
-```
+### How to Verify
+Open your browser Developer Tools Console or Google Analytics **Reports > Realtime** (or **DebugView**) to inspect live events firing as you navigate and grade mock interviews.

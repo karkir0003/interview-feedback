@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { supabase } from '../../lib/supabase';
 import { InterviewType, RubricCriterion } from '../../types';
 import { useToast } from '../common/Toast';
+import { trackEvent } from '../../lib/analytics';
 import {
   ShieldCheck,
   ShieldAlert,
@@ -118,6 +119,10 @@ export function RubricStudioTab({
             : c
         )
       );
+
+      trackEvent('rubric_calibrated', {
+        axis: editCriterionForm.label.trim(),
+      });
 
       success('Rubric Updated', `"${editCriterionForm.label.trim()}" calibration definitions saved successfully.`);
       setEditingCriterionId(null);

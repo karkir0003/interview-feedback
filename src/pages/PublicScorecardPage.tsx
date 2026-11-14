@@ -136,6 +136,10 @@ export function PublicScorecardPage() {
           if (cardData.candidate_name) {
             document.title = `${cardData.candidate_name}'s Scorecard — MockSignal`;
           }
+          trackEvent('scorecard_viewed', {
+            track: cardData.interview_type_name,
+            verdict: cardData.hireability,
+          });
         }
       } catch (err: unknown) {
         const e = err as Error;
