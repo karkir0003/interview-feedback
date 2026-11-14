@@ -19,6 +19,7 @@ import {
   Layers,
   ChevronDown,
   BookOpen,
+  ExternalLink,
 } from 'lucide-react';
 
 const SCALE_LABELS: Record<number, string> = {
@@ -479,6 +480,41 @@ export function PublicScorecardPage() {
               </div>
             );
           })}
+        </div>
+
+        {/* Supporter Tip Card */}
+        <div className="mt-8 rounded-2xl bg-gradient-to-br from-amber-50/90 via-orange-50/40 to-amber-100/50 border border-amber-200/90 p-6 sm:p-7 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div className="space-y-1.5 max-w-xl">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">💸</span>
+              <h3 className="text-base font-bold text-slate-900">
+                Enjoyed the session?
+              </h3>
+            </div>
+            <p className="text-sm text-slate-700 leading-relaxed">
+              Feel free to leave a{' '}
+              <a
+                href="https://buy.stripe.com/00g4k40b0gLOcV25kk"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('tip_button_clicked', { platform: 'stripe', source: 'inline_link' })}
+                className="font-semibold text-amber-900 underline underline-offset-2 hover:text-amber-950"
+              >
+                tip
+              </a>{' '}
+              — it helps support the time and care I put into each 1:1.
+            </p>
+          </div>
+          <a
+            href="https://buy.stripe.com/00g4k40b0gLOcV25kk"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackEvent('tip_button_clicked', { platform: 'stripe', source: 'cta_button' })}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-950 font-semibold text-sm shadow-sm transition-all duration-150 shrink-0 border border-amber-400"
+          >
+            <span>Leave a Tip 💸</span>
+            <ExternalLink className="h-4 w-4 text-slate-950" />
+          </a>
         </div>
       </div>
     </div>

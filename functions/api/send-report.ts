@@ -124,7 +124,7 @@ export const onRequestPost = async (context: {
     }
 
     // 4. Send email via Resend API
-    const fromAddress = env.RESEND_FROM_EMAIL || 'Interview Feedback <onboarding@resend.dev>';
+    const fromAddress = 'MockSignal <onboarding@resend.dev>';
     const emailRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -152,6 +152,11 @@ export const onRequestPost = async (context: {
               <a href="${reportUrl}" style="background-color: #0284c7; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; display: inline-block; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
                 View Your Scorecard & Feedback →
               </a>
+            </div>
+            <div style="background-color: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 18px; margin: 24px 0;">
+              <p style="font-size: 13px; color: #78350f; margin: 0; line-height: 1.5;">
+                💸 <strong>Enjoyed the session?</strong> Feel free to leave a <a href="https://buy.stripe.com/00g4k40b0gLOcV25kk" style="color: #b45309; font-weight: 700; text-decoration: underline;">tip on Stripe</a> — it helps support the time and care I put into each 1:1.
+              </p>
             </div>
             <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 24px 0;">
               <p style="font-size: 13px; color: #475569; margin: 0; line-height: 1.5;">
