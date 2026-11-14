@@ -38,6 +38,6 @@ jobs:
       - name: Vite Production Build
         run: yarn build
         env:
-          VITE_SUPABASE_URL: 'https://placeholder-project.supabase.co'
-          VITE_SUPABASE_ANON_KEY: 'placeholder-anon-key'
-          VITE_APP_URL: 'https://interview-feedback.pages.dev'
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_APP_URL: ${{ secrets.VITE_APP_URL }}
