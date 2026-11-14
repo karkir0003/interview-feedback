@@ -12,7 +12,7 @@
     "test:supabase": "vitest run src/test/supabase.test.ts",
     "verify": "tsc -b && vitest run && vite build",
     "preview": "vite preview",
-    "deploy": "yarn build && wrangler pages deploy dist --project-name=mocksignal",
+    "deploy": "yarn build && wrangler deploy",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:status": "supabase status",
