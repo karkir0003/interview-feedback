@@ -77,6 +77,7 @@ describe('Public Candidate Scorecard: Rubric Benchmark Visualizations', () => {
       canGrade: false,
       isLoading: false,
       isConfigured: true,
+      signInWithPassword: vi.fn(),
       signInWithMagicLink: vi.fn(),
       signInWithGoogle: vi.fn(),
       signOut: vi.fn(),

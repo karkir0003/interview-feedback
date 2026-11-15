@@ -1,4 +1,4 @@
-# Interview Feedback Platform
+# MockSignal: The Go-To Mock Interview Feedback Platform
 
 A platform for grading and viewing feedback from 1:1 mock interview sessions. 
 
@@ -45,6 +45,16 @@ yarn dev:local
 - **Web App**: [http://localhost:5173](http://localhost:5173)
 - **Supabase Studio (Web UI)**: [http://127.0.0.1:54323](http://127.0.0.1:54323)
 - **Inbucket Local Mailbox**: [http://127.0.0.1:54324](http://127.0.0.1:54324)
+
+##### Pre-Seeded Local Test Accounts (Password: `password123`)
+| Role | Email | Capabilities |
+| :--- | :--- | :--- |
+| **Admin** | `admin@mocksignal.local` | Full access: Grade Interview, Question Bank, Rubrics Calibration |
+| **Interviewer** | `interviewer@mocksignal.local` | Grade Interview, Question Bank |
+| **Candidate** | `candidate@mocksignal.local` | View candidate interview timeline & history |
+| **Karthik (Admin)** | `karthik@datasciencegt.org` | Pre-linked to production snapshot evaluations |
+
+*Tip: The `/login` page includes a **Local Dev Quick-Login** card with 1-click authentication buttons for all roles.*
 
 #### Option B: Frontend Only (Points to Supabase Cloud)
 ```bash

@@ -13,6 +13,7 @@ interface AuthContextType {
   canGrade: boolean;
   isLoading: boolean;
   isConfigured: boolean;
+  signInWithPassword: (email: string, password?: string) => Promise<{ error: Error | null }>;
   signInWithMagicLink: (email: string) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -96,6 +97,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  const signInWithPassword = async (email: string, password = 'password123') => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.toLowerCase().trim(),
+        password,
+      });
+      return { error };
+    } catch (err: unknown) {
+      return { error: err as Error };
+    }
+  };
+
   const signInWithMagicLink = async (email: string) => {
     try {
       const redirectUrl = `${window.location.origin}/login`;
@@ -156,6 +169,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         canGrade,
         isLoading,
         isConfigured: isSupabaseConfigured,
+        signInWithPassword,
         signInWithMagicLink,
         signInWithGoogle,
         signOut,

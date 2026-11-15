@@ -62,6 +62,7 @@ describe('Grade Interview Page: Defaults & Required Field Validations', () => {
       canGrade: true,
       isLoading: false,
       isConfigured: true,
+      signInWithPassword: vi.fn(),
       signInWithMagicLink: vi.fn(),
       signInWithGoogle: vi.fn(),
       signOut: vi.fn(),

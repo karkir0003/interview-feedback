@@ -19,6 +19,7 @@ if (!skipSnapshot) {
       console.log('ℹ️  Proceeding with previously saved local snapshot in `supabase/seed.sql`.');
     } else {
       console.log('ℹ️  Proceeding with clean database baseline (no seed file found).');
+      fs.writeFileSync(path.resolve('supabase/seed.sql'), '-- Baseline seed fallback\n', 'utf-8');
     }
   }
 } else {
@@ -84,6 +85,12 @@ console.log('🌐 Supabase Studio UI:  http://127.0.0.1:54323  (View all tables 
 console.log('📬 Inbucket Local Mail: http://127.0.0.1:54324  (Test emails & magic links)');
 console.log('⚡ Local API Gateway:   http://127.0.0.1:54321');
 console.log('🐘 Local PostgreSQL:    postgresql://postgres:postgres@127.0.0.1:54322/postgres');
+console.log('------------------------------------------------------');
+console.log('🔑 PRE-SEEDED TEST ACCOUNTS (Password: password123)');
+console.log('  👑 Admin:       admin@mocksignal.local');
+console.log('  📝 Interviewer: interviewer@mocksignal.local');
+console.log('  🎓 Candidate:   candidate@mocksignal.local');
+console.log('  👤 Karthik:     karthik@datasciencegt.org');
 console.log('======================================================');
 console.log('\n👉 Next steps:');
 console.log('1. Run `yarn dev` to start your web app pointing at this local clone.');

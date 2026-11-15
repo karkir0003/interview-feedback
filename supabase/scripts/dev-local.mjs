@@ -59,6 +59,12 @@ console.log('======================================================');
 console.log('🌐 Web App:         http://localhost:5173');
 console.log('🛠️  Supabase Studio: http://127.0.0.1:54323 (View tables & data)');
 console.log('📬 Inbucket Mailbox: http://127.0.0.1:54324 (Test emails)');
+console.log('------------------------------------------------------');
+console.log('🔑 PRE-SEEDED TEST ACCOUNTS (Password: password123)');
+console.log('  👑 Admin:       admin@mocksignal.local');
+console.log('  📝 Interviewer: interviewer@mocksignal.local');
+console.log('  🎓 Candidate:   candidate@mocksignal.local');
+console.log('  👤 Karthik:     karthik@datasciencegt.org');
 console.log('======================================================\n');
 console.log('Starting Vite development server...\n');
 
