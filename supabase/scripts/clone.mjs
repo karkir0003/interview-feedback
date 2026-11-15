@@ -56,9 +56,13 @@ let localAnonKey = '';
 
 try {
   const statusOutput = execSync('supabase status -o json', { stdio: 'pipe' }).toString();
-  const status = JSON.parse(statusOutput);
-  if (status.API_URL) localApiUrl = status.API_URL;
-  if (status.ANON_KEY) localAnonKey = status.ANON_KEY;
+  const jsonStart = statusOutput.indexOf('{');
+  const jsonEnd = statusOutput.lastIndexOf('}');
+  if (jsonStart !== -1 && jsonEnd !== -1) {
+    const status = JSON.parse(statusOutput.slice(jsonStart, jsonEnd + 1));
+    if (status.API_URL) localApiUrl = status.API_URL;
+    if (status.ANON_KEY) localAnonKey = status.ANON_KEY;
+  }
 } catch {
   // Graceful fallback if status json output cannot be read
 }
