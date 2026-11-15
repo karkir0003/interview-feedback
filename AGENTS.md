@@ -45,7 +45,7 @@ This document provides instructions, architectural boundaries, security policies
 
 ### Component & TypeScript Standards
 - **Named Functional Components**: Always export named components (`export function ComponentName()`). Avoid default exports.
-- **Strict Typing**: Zero tolerance for build-breaking TypeScript errors. Never introduce loose `any` types where models exist in `src/types/`. Always run `npm run typecheck` (`tsc -b`) to verify.
+- **Strict Typing**: Zero tolerance for build-breaking TypeScript errors. Never introduce loose `any` types where models exist in `src/types/`. Always run `yarn typecheck` (`tsc -b`) to verify.
 - **URL Search Params for State**: When implementing multi-tab dashboards (e.g. `/admin?tab=questions`), sync active tabs with URL search params so views are shareable and refresh-safe.
 - **Icons**: Use `lucide-react` icons. Maintain consistent sizing (`h-4 w-4` for standard buttons, `h-3.5 w-3.5` for compact badges).
 - **Styling**: Use utility Tailwind CSS classes matching the clean, modern engineering theme (slate neutral borders, emerald accents for success, blue accents for LLD, purple for AI Coding, amber for warnings).
@@ -70,8 +70,8 @@ This document provides instructions, architectural boundaries, security policies
 
 ### Local Development & Testing Workflow
 - **Replay from Scratch**: `supabase db reset` wipes the local database and replays all migrations in `supabase/migrations/` in chronological order.
-- **Snapshot Production**: `npm run db:snapshot` extracts a data-only snapshot of public tables into `supabase/seed.sql` using `.env` credentials dynamically.
-- **Local Clone**: `npm run db:clone` starts the local Supabase container, replays migrations, applies `supabase/seed.sql`, and exposes **Supabase Studio at `http://127.0.0.1:54323`**.
+- **Snapshot Production**: `yarn db:snapshot` extracts a data-only snapshot of public tables into `supabase/seed.sql` using `.env` credentials dynamically.
+- **Local Clone**: `yarn db:clone` starts the local Supabase container, replays migrations, applies `supabase/seed.sql`, and exposes **Supabase Studio at `http://127.0.0.1:54323`**.
 
 ---
 
@@ -129,13 +129,13 @@ Before completing any task or committing changes, an agent **MUST ALWAYS** run t
 
 ```bash
 # 1. Typecheck the entire project (client + server + functions)
-npm run typecheck   # or yarn typecheck (tsc -b)
+yarn typecheck
 
 # 2. Run all unit and integration tests
-npm test            # or yarn test (vitest run)
+yarn test
 
 # 3. Verify production Vite build & asset bundling
-npm run build       # or yarn build
+yarn build
 ```
 
 If ANY step fails, fix the underlying issue immediately before asking the user for review.

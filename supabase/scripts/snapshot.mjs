@@ -32,7 +32,7 @@ if (process.env.DATABASE_URL) {
       { stdio: 'inherit' }
     );
     console.log(`✅ Snapshot successfully saved to ${targetFile}!`);
-    console.log(`💡 Run 'npm run db:clone' to spin up your local Supabase clone with this data.`);
+    console.log(`💡 Run 'yarn db:clone' to spin up your local Supabase clone with this data.`);
   } catch {
     console.error('\n❌ Failed to export snapshot via DATABASE_URL.');
     process.exit(1);
@@ -51,7 +51,7 @@ if (process.env.DATABASE_URL) {
       stdio: 'inherit',
     });
     console.log(`✅ Snapshot successfully saved to ${targetFile}!`);
-    console.log(`💡 Run 'npm run db:clone' to spin up your local Supabase clone with this data.`);
+    console.log(`💡 Run 'yarn db:clone' to spin up your local Supabase clone with this data.`);
   } catch {
     console.error('\n❌ Failed to export database snapshot.');
     console.error('👉 Make sure you are logged in via `supabase login` and enter your database password if prompted.');
