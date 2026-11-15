@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../components/common/Toast';
-import { Mail, Sparkles, AlertTriangle, ArrowRight, Loader2, Award, ShieldCheck, ClipboardCheck, User } from 'lucide-react';
+import { DevQuickLogin } from '../components/auth/DevQuickLogin';
+import { Mail, Sparkles, AlertTriangle, ArrowRight, Loader2, Award } from 'lucide-react';
 
 export function LoginPage() {
   const { signInWithMagicLink, signInWithGoogle, signInWithPassword, isConfigured } = useAuth();
@@ -103,65 +104,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
         )}
 
         {/* Local Development Quick Logins */}
-        {import.meta.env.DEV && (
-          <div className="mb-6 rounded-2xl border border-blue-200 bg-blue-50/80 p-4 sm:p-5 shadow-xs">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-blue-950">
-                Local Dev Quick-Login
-              </h3>
-            </div>
-            <p className="text-xs text-blue-800/80 mb-3.5">
-              1-click instant login using pre-seeded test accounts (<code className="font-mono text-[11px] bg-blue-100/80 px-1 py-0.5 rounded text-blue-900">password123</code>):
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
-              <button
-                type="button"
-                onClick={() => handleDevLogin('admin@mocksignal.local')}
-                disabled={isSubmitting}
-                className="flex flex-col items-start p-2.5 rounded-xl border border-blue-200/80 bg-white hover:bg-blue-50 text-left transition shadow-xs group cursor-pointer"
-              >
-                <div className="flex items-center gap-1.5 font-semibold text-xs text-slate-800 group-hover:text-blue-700">
-                  <ShieldCheck className="h-3.5 w-3.5 text-purple-600" />
-                  <span>Admin</span>
-                </div>
-                <span className="text-[10px] text-slate-500 font-mono mt-0.5 truncate w-full">
-                  admin@mocksignal.local
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleDevLogin('interviewer@mocksignal.local')}
-                disabled={isSubmitting}
-                className="flex flex-col items-start p-2.5 rounded-xl border border-blue-200/80 bg-white hover:bg-blue-50 text-left transition shadow-xs group cursor-pointer"
-              >
-                <div className="flex items-center gap-1.5 font-semibold text-xs text-slate-800 group-hover:text-blue-700">
-                  <ClipboardCheck className="h-3.5 w-3.5 text-blue-600" />
-                  <span>Interviewer</span>
-                </div>
-                <span className="text-[10px] text-slate-500 font-mono mt-0.5 truncate w-full">
-                  interviewer@mocksignal.local
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleDevLogin('candidate@mocksignal.local')}
-                disabled={isSubmitting}
-                className="flex flex-col items-start p-2.5 rounded-xl border border-blue-200/80 bg-white hover:bg-blue-50 text-left transition shadow-xs group cursor-pointer"
-              >
-                <div className="flex items-center gap-1.5 font-semibold text-xs text-slate-800 group-hover:text-blue-700">
-                  <User className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>Candidate</span>
-                </div>
-                <span className="text-[10px] text-slate-500 font-mono mt-0.5 truncate w-full">
-                  candidate@mocksignal.local
-                </span>
-              </button>
-            </div>
-          </div>
-        )}
+        <DevQuickLogin onLogin={handleDevLogin} isSubmitting={isSubmitting} />
 
         {/* Login Card */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/50 p-6 sm:p-8">
