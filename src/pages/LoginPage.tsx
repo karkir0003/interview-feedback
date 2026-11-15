@@ -114,7 +114,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
             <p className="text-xs text-blue-800/80 mb-3.5">
               1-click instant login using pre-seeded test accounts (<code className="font-mono text-[11px] bg-blue-100/80 px-1 py-0.5 rounded text-blue-900">password123</code>):
             </p>
-            <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
               <button
                 type="button"
                 onClick={() => handleDevLogin('admin@mocksignal.local')}
@@ -157,21 +157,6 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
                 </div>
                 <span className="text-[10px] text-slate-500 font-mono mt-0.5 truncate w-full">
                   candidate@mocksignal.local
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleDevLogin('karthik@datasciencegt.org')}
-                disabled={isSubmitting}
-                className="flex flex-col items-start p-2.5 rounded-xl border border-blue-200/80 bg-white hover:bg-blue-50 text-left transition shadow-xs group cursor-pointer"
-              >
-                <div className="flex items-center gap-1.5 font-semibold text-xs text-slate-800 group-hover:text-blue-700">
-                  <Award className="h-3.5 w-3.5 text-amber-600" />
-                  <span>Karthik (Admin)</span>
-                </div>
-                <span className="text-[10px] text-slate-500 font-mono mt-0.5 truncate w-full">
-                  karthik@datasciencegt.org
                 </span>
               </button>
             </div>

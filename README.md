@@ -50,9 +50,8 @@ yarn dev:local
 | Role | Email | Capabilities |
 | :--- | :--- | :--- |
 | **Admin** | `admin@mocksignal.local` | Full access: Grade Interview, Question Bank, Rubrics Calibration |
-| **Interviewer** | `interviewer@mocksignal.local` | Grade Interview, Question Bank |
-| **Candidate** | `candidate@mocksignal.local` | View candidate interview timeline & history |
-| **Karthik (Admin)** | `karthik@datasciencegt.org` | Pre-linked to production snapshot evaluations |
+| **Interviewer** | `interviewer@mocksignal.local` | Grade Interview, Question Bank, score candidates |
+| **Candidate** | `candidate@mocksignal.local` | Pre-seeded with 2 graded interview evaluations and rubric progression |
 
 *Tip: The `/login` page includes a **Local Dev Quick-Login** card with 1-click authentication buttons for all roles.*
 

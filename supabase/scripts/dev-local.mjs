@@ -63,8 +63,7 @@ console.log('------------------------------------------------------');
 console.log('🔑 PRE-SEEDED TEST ACCOUNTS (Password: password123)');
 console.log('  👑 Admin:       admin@mocksignal.local');
 console.log('  📝 Interviewer: interviewer@mocksignal.local');
-console.log('  🎓 Candidate:   candidate@mocksignal.local');
-console.log('  👤 Karthik:     karthik@datasciencegt.org');
+console.log('  🎓 Candidate:   candidate@mocksignal.local (Pre-seeded with mock reviews)');
 console.log('======================================================\n');
 console.log('Starting Vite development server...\n');
 

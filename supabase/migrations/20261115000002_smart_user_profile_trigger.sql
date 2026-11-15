@@ -13,7 +13,7 @@ DECLARE
   v_role text := 'candidate';
 BEGIN
   -- Auto-promote designated admin patterns for development and trusted accounts
-  IF lower(trim(new.email)) IN ('admin@mocksignal.local', 'karthik@datasciencegt.org')
+  IF lower(trim(new.email)) = 'admin@mocksignal.local'
      OR lower(trim(new.email)) LIKE '%+admin@%'
      OR lower(trim(new.email)) LIKE 'admin@%' THEN
     v_role := 'admin';
