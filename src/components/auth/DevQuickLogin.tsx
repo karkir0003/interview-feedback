@@ -65,3 +65,4 @@ export function DevQuickLogin({ onLogin, isSubmitting = false }: DevQuickLoginPr
     </div>
   );
 }
+
