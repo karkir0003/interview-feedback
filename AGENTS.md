@@ -69,10 +69,19 @@ This document provides instructions, architectural boundaries, security policies
    - Embed sanity assertions at the end of the migration block (e.g., `IF count > 0 THEN RAISE EXCEPTION ...`). If any assertion fails, PostgreSQL automatically rolls back the entire transaction.
 
 ### Local Development & Testing Workflow
-- **One-Command Dev Environment**: `yarn dev:local` boots local Supabase with the latest production snapshot, auto-configures `.env.local`, and launches Vite.
-- **Replay from Scratch**: `supabase db reset` wipes the local database and replays all migrations in `supabase/migrations/` in chronological order.
+- **One-Command Dev Environment**: `yarn dev:local` boots local Supabase with the latest production snapshot (`supabase/seed.sql`) and synthetic dev users (`supabase/dev-users.sql`), auto-configures `.env.local` dynamically, and launches Vite on `http://localhost:5173`.
+- **Pre-Seeded Synthetic Test Accounts (Password: `password123`)**:
+  - `admin@mocksignal.local`: Full permissions across `/admin`, rubrics, question bank, and grading.
+  - `interviewer@mocksignal.local`: Grader permissions for evaluating sessions.
+  - `candidate@mocksignal.local`: Pre-seeded with 2 graded mock interview scorecards (Splitwise & LRU Cache) viewable at `/history`.
+- **1-Click Dev Quick-Login**: In development mode, `/login` displays the `<DevQuickLogin />` panel with 1-click authentication buttons for all three roles.
+- **Replay from Scratch**: `yarn db:reset` wipes the local database and replays all migrations in `supabase/migrations/` followed by snapshot and dev seeds in chronological order.
 - **Snapshot Production**: `yarn db:snapshot` extracts a data-only snapshot of public tables into `supabase/seed.sql` using `.env` credentials dynamically.
-- **Local Clone**: `yarn db:clone` starts the local Supabase container, replays migrations, applies `supabase/seed.sql`, and exposes **Supabase Studio at `http://127.0.0.1:54323`**.
+- **Local Tooling Endpoints**:
+  - **Web App**: `http://localhost:5173`
+  - **Supabase Studio UI**: `http://127.0.0.1:54323` (Browse tables and run SQL)
+  - **Mailpit Local Mailbox**: `http://127.0.0.1:54324` (Inspect magic links and outgoing emails)
+  - **API Gateway**: `http://127.0.0.1:54321` (PostgREST & GoTrue)
 
 ---
 
