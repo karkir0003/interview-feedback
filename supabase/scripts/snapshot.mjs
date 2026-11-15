@@ -30,7 +30,8 @@ function prependTruncateHeader(filePath) {
   const content = fs.readFileSync(filePath, 'utf-8');
   if (content.includes('TRUNCATE TABLE')) return;
 
-  const truncateBlock = `
+  const truncateBlock = `SET session_replication_role = replica;
+
 -- Clean baseline migration seeds before loading production snapshot
 TRUNCATE TABLE 
   public.evaluation_scores,
