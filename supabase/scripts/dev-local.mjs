@@ -67,8 +67,16 @@ console.log('  🎓 Candidate:   candidate@mocksignal.local (Pre-seeded with moc
 console.log('======================================================\n');
 console.log('Starting Vite development server...\n');
 
+// Explicitly inject local variables into Vite process environment so they override .env
+const devEnv = {
+  ...process.env,
+  VITE_SUPABASE_URL: localApiUrl,
+  VITE_SUPABASE_ANON_KEY: localAnonKey,
+  VITE_SUPABASE_PUBLISHABLE_KEY: localAnonKey,
+};
+
 // Spawn Vite in foreground with full interactive terminal stdio
-const vite = spawn('npx vite', { stdio: 'inherit', shell: true });
+const vite = spawn('npx vite', { stdio: 'inherit', shell: true, env: devEnv });
 
 vite.on('exit', (code) => {
   process.exit(code ?? 0);
