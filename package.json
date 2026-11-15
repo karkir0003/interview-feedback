@@ -19,6 +19,8 @@
     "db:reset": "supabase db reset",
     "db:push": "supabase db push",
     "db:pull": "supabase db pull",
+    "db:snapshot": "supabase db dump --project-ref igazswhnqsoodtqjeahg --data-only > supabase/seed.sql",
+    "db:clone": "supabase start && supabase db reset",
     "db:types": "supabase gen types typescript --local > src/types/database.types.ts"
   },
   "dependencies": {
