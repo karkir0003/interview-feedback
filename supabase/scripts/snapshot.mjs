@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { execSync } from 'child_process';
+import fs from 'fs';
 import path from 'path';
 
 // Extract Supabase URL from environment
@@ -24,6 +25,27 @@ if (!projectRef && supabaseUrl) {
 
 const targetFile = path.resolve('supabase/seed.sql');
 
+function prependTruncateHeader(filePath) {
+  if (!fs.existsSync(filePath)) return;
+  const content = fs.readFileSync(filePath, 'utf-8');
+  if (content.includes('TRUNCATE TABLE')) return;
+
+  const truncateBlock = `
+-- Clean baseline migration seeds before loading production snapshot
+TRUNCATE TABLE 
+  public.evaluation_scores,
+  public.evaluations,
+  public.questions,
+  public.rubric_criteria,
+  public.interview_types,
+  public.candidates,
+  public.profiles
+CASCADE;
+
+`;
+  fs.writeFileSync(filePath, truncateBlock + content, 'utf-8');
+}
+
 if (process.env.DATABASE_URL) {
   console.log('📦 Exporting public data snapshot using DATABASE_URL...');
   try {
@@ -31,6 +53,7 @@ if (process.env.DATABASE_URL) {
       `supabase db dump --db-url "${process.env.DATABASE_URL}" --data-only --schema public -f "${targetFile}"`,
       { stdio: 'inherit' }
     );
+    prependTruncateHeader(targetFile);
     console.log(`✅ Snapshot successfully saved to ${targetFile}!`);
     console.log(`💡 Run 'yarn db:clone' to spin up your local Supabase clone with this data.`);
   } catch {
@@ -50,6 +73,7 @@ if (process.env.DATABASE_URL) {
     execSync(`supabase db dump --linked --data-only --schema public -f "${targetFile}"`, {
       stdio: 'inherit',
     });
+    prependTruncateHeader(targetFile);
     console.log(`✅ Snapshot successfully saved to ${targetFile}!`);
     console.log(`💡 Run 'yarn db:clone' to spin up your local Supabase clone with this data.`);
   } catch {

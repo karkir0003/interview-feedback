@@ -20,7 +20,7 @@ if (!isRunning) {
     execSync('node --env-file=.env supabase/scripts/clone.mjs', { stdio: 'inherit' });
   } catch {
     console.error('\n❌ Could not start local Supabase.');
-    console.error('👉 Ensure Docker Desktop or OrbStack is running on your Mac, then run this command again.');
+    console.error('👉 If Docker/Colima is running, check the terminal output above for specific database or seed errors.');
     process.exit(1);
   }
 } else {
