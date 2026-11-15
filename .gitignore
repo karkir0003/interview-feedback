@@ -65,3 +65,8 @@ coverage/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Supabase local snapshots & CLI temp state
+supabase/seed.sql
+supabase/.temp/
+
