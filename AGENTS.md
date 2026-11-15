@@ -69,6 +69,7 @@ This document provides instructions, architectural boundaries, security policies
    - Embed sanity assertions at the end of the migration block (e.g., `IF count > 0 THEN RAISE EXCEPTION ...`). If any assertion fails, PostgreSQL automatically rolls back the entire transaction.
 
 ### Local Development & Testing Workflow
+- **One-Command Dev Environment**: `yarn dev:local` boots local Supabase with the latest production snapshot, auto-configures `.env.local`, and launches Vite.
 - **Replay from Scratch**: `supabase db reset` wipes the local database and replays all migrations in `supabase/migrations/` in chronological order.
 - **Snapshot Production**: `yarn db:snapshot` extracts a data-only snapshot of public tables into `supabase/seed.sql` using `.env` credentials dynamically.
 - **Local Clone**: `yarn db:clone` starts the local Supabase container, replays migrations, applies `supabase/seed.sql`, and exposes **Supabase Studio at `http://127.0.0.1:54323`**.

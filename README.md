@@ -36,24 +36,23 @@ update profiles set role = 'admin' where email = 'your-email@example.com';
 ```
 
 ### 4. Start Development Server
+
+#### Option A: Full Local Stack (Recommended — 1 Command)
+Automatically boots local Supabase with the latest production snapshot, sets up environment variables, and launches the frontend:
+```bash
+yarn dev:local
+```
+- **Web App**: [http://localhost:5173](http://localhost:5173)
+- **Supabase Studio (Web UI)**: [http://127.0.0.1:54323](http://127.0.0.1:54323)
+- **Inbucket Local Mailbox**: [http://127.0.0.1:54324](http://127.0.0.1:54324)
+
+#### Option B: Frontend Only (Points to Supabase Cloud)
 ```bash
 yarn dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-### Local Supabase Clone & Preview (Recommended)
-To test migrations or features locally against a private snapshot of production:
-```bash
-# 1. Pulls latest production data snapshot and spins up local Supabase
-yarn db:clone
-
-# 2. Start the frontend (automatically points to your local clone)
-yarn dev
-
-# 3. Open Supabase Studio in your browser to inspect tables and data
-# http://127.0.0.1:54323
-```
-To stop the local containers when finished:
+### Stopping the Local Stack
+When finished working with the local stack:
 ```bash
 yarn db:stop
 rm .env.local
