@@ -29,7 +29,7 @@ RESEND_API_KEY=re_your_api_key
 ```
 
 ### 3. Initialize the Database
-1. In your [Supabase Dashboard](https://supabase.com) > **SQL Editor**, run the contents of [`supabase/init.sql`](supabase/init.sql). This sets up tables, RLS policies, triggers, and calibrated rubric criteria.
+1. Run migrations using Supabase CLI (`yarn db:push` or `supabase db push`), or copy and run the baseline schema in your [Supabase Dashboard](https://supabase.com) > **SQL Editor** from [`supabase/migrations/20261113000000_initial_schema.sql`](supabase/migrations/20261113000000_initial_schema.sql). This sets up tables, RLS policies, triggers, and calibrated rubric criteria.
 2. Sign in once at `/login` with your email, then run this in the Supabase SQL Editor to grant admin access:
 ```sql
 update profiles set role = 'admin' where email = 'your-email@example.com';

@@ -143,7 +143,7 @@ A lightweight, low-friction web application for conducting and grading 1-on-1 mo
 
 ---
 
-## 6. Database Schema & Seed SQL (`init.sql`)
+## 6. Database Schema & Initial Migration (`20261113000000_initial_schema.sql`)
 
 ```sql
 -- ==========================================
@@ -428,7 +428,7 @@ Use `react-markdown` + `remark-gfm` + `@tailwindcss/typography` (`prose prose-sl
 ---
 
 ## 9. Deployment & Setup Checklist
-1. Create a Supabase project and execute `init.sql` in the SQL Editor.
+1. Create a Supabase project and execute `20261113000000_initial_schema.sql` (or `supabase db push`) in the SQL Editor.
 2. Enable **Email (Magic Link)** and/or **Google OAuth** in Supabase Authentication settings and configure redirect URLs (`/login`, `/admin`, `/history`).
 3. Sign into the app once with your admin email (triggering `handle_new_user`), then run `update profiles set role = 'admin' where email = '<your-email>';` in Supabase SQL Editor.
 4. Configure environment variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `RESEND_API_KEY`, `APP_URL`) and deploy to Vercel or Cloudflare Pages. I'm thinking of going for cloudflare pages
