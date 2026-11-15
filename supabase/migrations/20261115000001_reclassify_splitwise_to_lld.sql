@@ -1,5 +1,6 @@
 -- Migration: Reclassify 'Splitwise' question and associated evaluations to LLD Coding
 -- Idempotent: safe to run multiple times without duplicate key or foreign key errors
+-- Atomic: fails safe and rolls back entirely if any step or assertion fails
 
 do $$
 declare
@@ -8,6 +9,8 @@ declare
   v_ai_type_id uuid;
   v_lld_question_id uuid;
   v_ai_question_id uuid;
+  v_ai_count int;
+  v_unmigrated_eval_count int;
 begin
   -- 1. Look up interview track IDs
   select id, name into v_lld_type_id, v_lld_name 
@@ -19,7 +22,7 @@ begin
   where slug = 'ai_coding';
 
   if v_lld_type_id is null then
-    raise exception 'Interview type "lld" not found in interview_types table';
+    raise exception 'MIGRATION ABORTED: Interview type "lld" not found in interview_types table';
   end if;
 
   -- 2. Find existing question rows for Splitwise under LLD and AI Coding
@@ -78,4 +81,25 @@ begin
   )
   and criterion_key = 'ai_fluency';
 
+  -- 7. Built-in Automated Sanity Assertions:
+  -- If any verification fails, the exception automatically aborts and ROLLS BACK the entire block.
+  select count(*) into v_ai_count 
+  from public.questions q
+  where q.interview_type_id = v_ai_type_id 
+    and lower(trim(q.title)) = 'splitwise';
+
+  if v_ai_count > 0 then
+    raise exception 'ASSERTION FAILED: Splitwise still exists under ai_coding. Rolling back.';
+  end if;
+
+  select count(*) into v_unmigrated_eval_count
+  from public.evaluations e
+  where lower(trim(e.question_title)) = 'splitwise'
+    and e.interview_type_id <> v_lld_type_id;
+
+  if v_unmigrated_eval_count > 0 then
+    raise exception 'ASSERTION FAILED: % evaluation(s) were not migrated to LLD. Rolling back.', v_unmigrated_eval_count;
+  end if;
+
+  raise notice 'SUCCESS: Splitwise and all associated evaluations successfully migrated to LLD Coding.';
 end $$;
