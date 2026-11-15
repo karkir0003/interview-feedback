@@ -1,10 +1,12 @@
-# MockSignal: Calibrated Mock Interview Feedback Platform
+# MockSignal: The Go-To Mock Interview Feedback Platform
 
-MockSignal is an end-to-end engineering mock interview evaluation and performance tracking platform. It allows interviewers to grade candidates across calibrated rubrics with markdown feedback, generates secure public scorecards, and provides candidates with longitudinal growth tracking.
+A platform for grading and viewing feedback from 1:1 mock interview sessions. 
 
----
+**Supported Functionality**
+* Admin can fill out interview feedback based on interview type and rubric and it's emailed to a candidate
+* Candidate can view their specific feedback via the emailed URL and if they sign up, they're able to view all historical feedback 
 
-## ⚡ Quick Start (Local Development)
+## How to Run the App
 
 MockSignal features a **1-command fullstack local development environment** that spins up isolated local Supabase containers (seeded with production snapshots and pre-configured test users), configures environment variables, and launches the Vite frontend.
 
