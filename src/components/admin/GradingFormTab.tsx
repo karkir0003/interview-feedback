@@ -34,6 +34,7 @@ import {
   Copy,
   X,
   RotateCcw,
+  Mail,
 } from 'lucide-react';
 import { SCALE_LABELS } from './RubricStudioTab';
 
@@ -44,7 +45,7 @@ interface GradingFormTabProps {
   pastEvaluations: EvaluationWithScores[];
   setAllQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
   onEvaluationPublished: () => void;
-  copyPastLink: (token: string, id: string) => void;
+  copyPastLink: (token: string, id: string, trackName?: string) => void;
   copiedTokenId: string | null;
 }
 
@@ -93,6 +94,7 @@ export function GradingFormTab({
     candidateName: string;
     candidateEmail: string;
   } | null>(null);
+  const [resendingEvalId, setResendingEvalId] = useState<string | null>(null);
 
   // Proactively clear any legacy drafts from localStorage on mount
   useEffect(() => {
@@ -405,6 +407,62 @@ export function GradingFormTab({
     }
   };
 
+  const handleResendEmail = async (ev: EvaluationWithScores) => {
+    const candidateEmail = ev.candidates?.email;
+    const candidateName = ev.candidates?.full_name || 'Candidate';
+
+    if (!candidateEmail) {
+      showError('Cannot send email', 'Candidate email address is missing for this evaluation.');
+      return;
+    }
+
+    try {
+      setResendingEvalId(ev.id);
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+
+      const res = await fetch('/api/send-report', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          evaluationId: ev.id,
+          candidateEmail,
+          candidateName,
+          interviewTypeName: ev.interview_type_name,
+          questionTitle: ev.question_title,
+          publicToken: ev.public_token,
+        }),
+      });
+
+      if (!res.ok) {
+        const errResp = await res.json().catch(() => ({}));
+        const errMsg =
+          errResp && typeof errResp === 'object' && 'error' in errResp
+            ? String(errResp.error)
+            : 'Failed to send email';
+        showError('Email Failed', errMsg);
+        return;
+      }
+
+      trackEvent('evaluation_email_resent', {
+        track: ev.interview_type_name,
+        verdict: ev.hireability,
+      });
+
+      success('Email Resent!', `Feedback report successfully sent to ${candidateEmail}`);
+    } catch (err: unknown) {
+      const e = err as Error;
+      showError('Dispatch error', e.message || 'Network error while attempting to resend email');
+    } finally {
+      setResendingEvalId(null);
+    }
+  };
+
   return (
     <>
       {/* Form Reset Action */}
@@ -442,6 +500,7 @@ export function GradingFormTab({
               type="button"
               onClick={() => {
                 navigator.clipboard.writeText(recentScorecard.url);
+                trackEvent('admin_banner_link_copied');
                 success('Link Copied!', 'Scorecard URL copied to clipboard');
               }}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm"
@@ -1304,7 +1363,26 @@ export function GradingFormTab({
                         <div className="flex items-center justify-end gap-2">
                           <button
                             type="button"
-                            onClick={() => copyPastLink(ev.public_token, ev.id)}
+                            disabled={resendingEvalId === ev.id}
+                            onClick={() => handleResendEmail(ev)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                            title={ev.candidates?.email ? `Resend feedback email to ${ev.candidates.email}` : 'Candidate email missing'}
+                          >
+                            {resendingEvalId === ev.id ? (
+                              <>
+                                <Loader2 className="h-3 w-3 animate-spin text-blue-600" />
+                                <span>Sending...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Mail className="h-3 w-3 text-slate-500" />
+                                <span>Resend Email</span>
+                              </>
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => copyPastLink(ev.public_token, ev.id, ev.interview_type_name)}
                             className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition"
                             title="Copy public scorecard link"
                           >
@@ -1324,6 +1402,12 @@ export function GradingFormTab({
                             href={`/r/${ev.public_token}`}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() =>
+                              trackEvent('admin_scorecard_opened', {
+                                evaluation_id: ev.id,
+                                track: ev.interview_type_name,
+                              })
+                            }
                             className="p-1 text-slate-400 hover:text-slate-700 transition"
                             title="Open scorecard in new tab"
                           >

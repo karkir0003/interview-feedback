@@ -275,4 +275,99 @@ describe('Grade Interview Page: Defaults & Required Field Validations', () => {
     const requiredBadges = screen.getAllByText('Selection Required *');
     expect(requiredBadges.length).toBe(2);
   });
+
+  it('renders Resend Email button for past evaluations and triggers email dispatch', async () => {
+    const mockEval = {
+      id: 'eval-123',
+      public_token: 'token-abc',
+      interview_type_id: 'type-1',
+      interview_type_name: 'DSA / LeetCode',
+      question_title: 'LRU Cache',
+      hireability: 'Hire',
+      overall_feedback: 'Solid work',
+      interviewed_at: '2026-11-15',
+      created_at: '2026-11-15T00:00:00Z',
+      candidates: {
+        id: 'cand-1',
+        email: 'alex@example.com',
+        full_name: 'Alex Johnson',
+        created_at: '',
+      },
+      evaluation_scores: [],
+    };
+
+    vi.spyOn(supabase, 'from').mockImplementation((table: string) => {
+      if (table === 'interview_types') {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              order: vi.fn().mockResolvedValue({ data: mockInterviewTypes, error: null }),
+            }),
+          }),
+        } as any;
+      }
+      if (table === 'rubric_criteria') {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              order: vi.fn().mockResolvedValue({ data: mockCriteria, error: null }),
+            }),
+          }),
+        } as any;
+      }
+      if (table === 'questions') {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              order: vi.fn().mockResolvedValue({ data: mockQuestions, error: null }),
+            }),
+          }),
+        } as any;
+      }
+      if (table === 'evaluations') {
+        return {
+          select: vi.fn().mockReturnValue({
+            order: vi.fn().mockReturnValue({
+              order: vi.fn().mockReturnValue({
+                limit: vi.fn().mockResolvedValue({ data: [mockEval], error: null }),
+              }),
+            }),
+          }),
+        } as any;
+      }
+      return {} as any;
+    });
+
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true }),
+    } as any);
+
+    render(
+      <MemoryRouter>
+        <ToastProvider>
+          <AdminDashboardPage />
+        </ToastProvider>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading interview rubrics and questions...')).toBeNull();
+    });
+
+    const resendBtn = screen.getByRole('button', { name: /resend email/i });
+    expect(resendBtn).toBeDefined();
+
+    fireEvent.click(resendBtn);
+
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledWith(
+        '/api/send-report',
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.stringContaining('alex@example.com'),
+        })
+      );
+    });
+  });
 });

@@ -105,7 +105,8 @@ export const onRequestPost = async (context: {
     }
 
     const origin = new URL(request.url).origin;
-    const reportUrl = `${origin}/r/${publicToken}`;
+    const cleanUrl = `${origin}/r/${publicToken}`;
+    const reportUrl = `${cleanUrl}?utm_source=email&utm_medium=feedback_report&utm_campaign=interview_evaluation`;
     const resendApiKey = env.RESEND_API_KEY;
 
     if (!resendApiKey) {
@@ -135,6 +136,10 @@ export const onRequestPost = async (context: {
         from: fromAddress,
         to: [candidateEmail],
         subject: `Your Mock Interview Feedback: ${interviewTypeName} — ${questionTitle}`,
+        tags: [
+          { name: 'category', value: 'feedback_report' },
+          { name: 'track', value: (interviewTypeName || 'general').toLowerCase().replace(/[^a-z0-9_-]/g, '_') },
+        ],
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #1e293b; background-color: #ffffff;">
             <div style="margin-bottom: 24px;">
@@ -165,7 +170,7 @@ export const onRequestPost = async (context: {
             </div>
             <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 28px 0;" />
             <p style="font-size: 12px; color: #94a3b8; margin: 0; line-height: 1.5; word-break: break-all;">
-              Direct link: <a href="${reportUrl}" style="color: #64748b; text-decoration: underline;">${reportUrl}</a>
+              Direct link: <a href="${reportUrl}" style="color: #64748b; text-decoration: underline;">${cleanUrl}</a>
             </p>
           </div>
         `,

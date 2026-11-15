@@ -9,6 +9,7 @@ import {
 } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../components/common/Toast';
+import { trackEvent } from '../lib/analytics';
 import { Loader2, ClipboardCheck, BookOpen, Sliders } from 'lucide-react';
 import { GradingFormTab } from '../components/admin/GradingFormTab';
 import { QuestionBankTab } from '../components/admin/QuestionBankTab';
@@ -105,10 +106,14 @@ export function AdminDashboardPage() {
     fetchReferenceData();
   }, [fetchReferenceData]);
 
-  const copyPastLink = (token: string, id: string) => {
+  const copyPastLink = (token: string, id: string, trackName?: string) => {
     const url = `${window.location.origin}/r/${token}`;
     navigator.clipboard.writeText(url);
     setCopiedTokenId(id);
+    trackEvent('admin_scorecard_link_copied', {
+      evaluation_id: id,
+      track: trackName,
+    });
     success('Link Copied!', 'Scorecard URL copied to clipboard.');
     setTimeout(() => setCopiedTokenId(null), 2500);
   };
