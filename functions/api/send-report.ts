@@ -124,7 +124,7 @@ export const onRequestPost = async (context: {
     }
 
     // 4. Send email via Resend API
-    const fromAddress = 'MockSignal <onboarding@resend.dev>';
+    const fromAddress = env.RESEND_FROM_EMAIL || 'MockSignal <onboarding@resend.dev>';
     const emailRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
