@@ -3,6 +3,19 @@ name: Deploy to Cloudflare Workers
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - 'server/**'
+      - 'functions/**'
+      - 'public/**'
+      - 'index.html'
+      - 'wrangler.json'
+      - 'package.json'
+      - 'yarn.lock'
+      - 'vite.config.ts'
+      - 'tsconfig*.json'
+      - 'tailwind.config.js'
+      - 'postcss.config.js'
   workflow_dispatch:
 
 jobs:
