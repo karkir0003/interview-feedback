@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { trackEvent } from '../lib/analytics';
 import { Award, ShieldCheck, Zap, ArrowRight, BarChart3 } from 'lucide-react';
 import { GITHUB_REPO_URL } from '../lib/constants';
 
@@ -38,6 +39,7 @@ export function HomePage() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
           <Link
             to="/login"
+            onClick={() => trackEvent('home_signin_cta_clicked')}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md shadow-blue-500/20 transition"
           >
             <span>Sign In to Access Scorecards</span>
@@ -47,6 +49,7 @@ export function HomePage() {
             href={GITHUB_REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent('read_documentation_clicked')}
             className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm transition"
           >
             Read Documentation

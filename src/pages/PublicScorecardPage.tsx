@@ -164,7 +164,7 @@ export function PublicScorecardPage() {
   }, [scorecard]);
 
   const handleCopyLink = () => {
-    const url = window.location.href;
+    const url = `${window.location.origin}/r/${token}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     trackEvent('scorecard_link_copied', {
@@ -232,6 +232,7 @@ export function PublicScorecardPage() {
             </div>
             <Link
               to="/login?redirect=/history"
+              onClick={() => trackEvent('scorecard_login_banner_clicked')}
               className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white text-blue-950 hover:bg-blue-50 shadow-sm transition shrink-0"
             >
               <span>Sign in with Email</span>
