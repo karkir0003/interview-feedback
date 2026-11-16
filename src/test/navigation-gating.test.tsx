@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Navbar } from '../components/layout/Navbar';
+import { HomePage } from '../pages/HomePage';
 import * as AuthModule from '../contexts/AuthContext';
 
 describe('Role-Based Navigation Gating (Navbar)', () => {
@@ -125,5 +126,36 @@ describe('Role-Based Navigation Gating (Navbar)', () => {
     expect(screen.getByText('Question Bank')).toBeDefined();
     expect(screen.getByText('Rubrics')).toBeDefined();
     expect(screen.getByText('My Sessions')).toBeDefined();
+  });
+
+  it('renders "Read Documentation" CTA on HomePage pointing to the project GitHub repository', () => {
+    vi.spyOn(AuthModule, 'useAuth').mockReturnValue({
+      user: null,
+      session: null,
+      profile: null,
+      role: null,
+      isAdmin: false,
+      isInterviewer: false,
+      canGrade: false,
+      isLoading: false,
+      isConfigured: true,
+      signInWithPassword: vi.fn(),
+      signInWithMagicLink: vi.fn(),
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+      refreshProfile: vi.fn(),
+    });
+
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+
+    const docLink = screen.getByRole('link', { name: /read documentation/i });
+    expect(docLink).toBeDefined();
+    expect(docLink.getAttribute('href')).toBe('https://github.com/karkir0003/interview-feedback#readme');
+    expect(docLink.getAttribute('target')).toBe('_blank');
+    expect(docLink.getAttribute('rel')).toContain('noopener');
   });
 });
