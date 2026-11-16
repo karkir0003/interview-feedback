@@ -3,20 +3,95 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../components/common/Toast';
 import { DevQuickLogin } from '../components/auth/DevQuickLogin';
-import { Mail, Sparkles, AlertTriangle, ArrowRight, Loader2, Award } from 'lucide-react';
+import { Mail, Sparkles, AlertTriangle, AlertCircle, ArrowRight, Loader2, Award } from 'lucide-react';
+
+function formatAuthError(code: string, rawMessage: string): { title: string; message: string } {
+  const desc = decodeURIComponent(rawMessage.replace(/\+/g, ' ')).toLowerCase();
+  const c = code.toLowerCase();
+
+  if (c === 'otp_expired' || desc.includes('expired') || desc.includes('invalid or has expired')) {
+    return {
+      title: 'Sign-in Link Expired',
+      message: 'This magic link has expired or has already been used. Please enter your email below to receive a fresh sign-in link.',
+    };
+  }
+
+  if (
+    c === 'over_email_send_rate_limit' ||
+    c === 'over_request_rate_limit' ||
+    desc.includes('rate limit') ||
+    desc.includes('rate_limit') ||
+    desc.includes('rate limit exceeded')
+  ) {
+    return {
+      title: 'Too Many Requests',
+      message: 'Too many sign-in emails were requested in a short window. Please wait a moment before trying again.',
+    };
+  }
+
+  if (c === 'access_denied') {
+    return {
+      title: 'Access Denied',
+      message: 'Sign-in was canceled or denied. Please try again.',
+    };
+  }
+
+  return {
+    title: 'Authentication Error',
+    message: rawMessage || 'Unable to authenticate with this link. Please request a new sign-in link.',
+  };
+}
 
 export function LoginPage() {
-  const { signInWithMagicLink, signInWithGoogle, signInWithPassword, isConfigured } = useAuth();
+  const { user, role, isLoading, signInWithMagicLink, signInWithGoogle, signInWithPassword, isConfigured } = useAuth();
   const { success, error: showError } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMagicLinkSent, setIsMagicLinkSent] = useState(false);
+  const [authError, setAuthError] = useState<{ title: string; message: string } | null>(null);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
+
+  // Auto-redirect if already signed in
+  useEffect(() => {
+    if (user && !isLoading) {
+      const redirect = new URLSearchParams(location.search).get('redirect');
+      const destination = redirect || (role === 'candidate' ? '/history' : '/admin');
+      navigate(destination, { replace: true });
+    }
+  }, [user, role, isLoading, location.search, navigate]);
 
   useEffect(() => {
     document.title = 'Sign In — MockSignal';
-  }, []);
+
+    // Parse both query parameters and URL hash fragments for Supabase errors
+    const searchParams = new URLSearchParams(location.search);
+    const rawHash = location.hash.startsWith('#') ? location.hash.substring(1) : location.hash;
+    const hashParams = new URLSearchParams(rawHash);
+
+    const errorCode = hashParams.get('error_code') || searchParams.get('error_code');
+    const errorDescription = hashParams.get('error_description') || searchParams.get('error_description');
+    const error = hashParams.get('error') || searchParams.get('error');
+
+    if (errorCode || errorDescription || error) {
+      const friendly = formatAuthError(errorCode || error || '', errorDescription || '');
+      setAuthError(friendly);
+      showError(friendly.title, friendly.message);
+
+      // Clean up URL hash and search params without triggering a page reload
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [location, showError]);
+
+  // Cooldown countdown timer for resending magic links
+  useEffect(() => {
+    if (cooldownSeconds <= 0) return;
+    const timer = setInterval(() => {
+      setCooldownSeconds((prev) => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldownSeconds]);
 
   const handleDevLogin = async (targetEmail: string) => {
     setIsSubmitting(true);
@@ -24,7 +99,8 @@ export function LoginPage() {
     setIsSubmitting(false);
 
     if (error) {
-      showError('Dev login failed', error.message);
+      const friendly = formatAuthError(error.name || '', error.message || '');
+      showError('Dev login failed', friendly.message);
     } else {
       success('Signed in', `Authenticated as ${targetEmail}`);
       const redirect = new URLSearchParams(location.search).get('redirect');
@@ -39,15 +115,53 @@ export function LoginPage() {
       return;
     }
 
+    if (cooldownSeconds > 0) {
+      showError('Please wait', `You can request another link in ${cooldownSeconds}s.`);
+      return;
+    }
+
     setIsSubmitting(true);
-    const { error } = await signInWithMagicLink(email);
+    setAuthError(null);
+
+    const redirectParam = new URLSearchParams(location.search).get('redirect');
+    const targetRedirect = redirectParam
+      ? `${window.location.origin}/login?redirect=${encodeURIComponent(redirectParam)}`
+      : `${window.location.origin}/login`;
+
+    const { error } = await signInWithMagicLink(email, targetRedirect);
     setIsSubmitting(false);
 
     if (error) {
-      showError('Authentication failed', error.message);
+      const friendly = formatAuthError(error.name || '', error.message || '');
+      setAuthError(friendly);
+      showError(friendly.title, friendly.message);
     } else {
       setIsMagicLinkSent(true);
+      setCooldownSeconds(60);
       success('Magic link dispatched!', `Check ${email} for your secure sign-in link.`);
+    }
+  };
+
+  const handleResendMagicLink = async () => {
+    if (cooldownSeconds > 0 || isSubmitting || !email) return;
+    setIsSubmitting(true);
+    setAuthError(null);
+
+    const redirectParam = new URLSearchParams(location.search).get('redirect');
+    const targetRedirect = redirectParam
+      ? `${window.location.origin}/login?redirect=${encodeURIComponent(redirectParam)}`
+      : `${window.location.origin}/login`;
+
+    const { error } = await signInWithMagicLink(email, targetRedirect);
+    setIsSubmitting(false);
+
+    if (error) {
+      const friendly = formatAuthError(error.name || '', error.message || '');
+      setAuthError(friendly);
+      showError(friendly.title, friendly.message);
+    } else {
+      setCooldownSeconds(60);
+      success('Link Resent!', `A fresh sign-in link has been sent to ${email}.`);
     }
   };
 
@@ -108,6 +222,20 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
 
         {/* Login Card */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/50 p-6 sm:p-8">
+          {/* Friendly Auth Error Alert Banner */}
+          {authError && (
+            <div
+              role="alert"
+              className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-xs text-amber-900 flex items-start gap-2.5 animate-in fade-in"
+            >
+              <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-amber-950">{authError.title}</p>
+                <p className="mt-0.5 text-amber-800 leading-relaxed">{authError.message}</p>
+              </div>
+            </div>
+          )}
+
           {isMagicLinkSent ? (
             <div className="text-center py-4">
               <div className="h-12 w-12 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center mb-3">
@@ -120,12 +248,28 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
               <p className="text-xs text-slate-500 mt-4">
                 Click the link in the email to automatically sign in.
               </p>
-              <button
-                onClick={() => setIsMagicLinkSent(false)}
-                className="mt-6 text-sm text-blue-600 hover:text-blue-800 font-medium transition"
-              >
-                ← Use a different email
-              </button>
+              <div className="mt-6 flex flex-col items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleResendMagicLink}
+                  disabled={cooldownSeconds > 0 || isSubmitting}
+                  className="text-xs font-semibold text-blue-600 hover:text-blue-700 disabled:text-slate-400 disabled:cursor-not-allowed transition"
+                >
+                  {cooldownSeconds > 0
+                    ? `Resend link in ${cooldownSeconds}s`
+                    : "Didn't receive the email? Resend link"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMagicLinkSent(false);
+                    setAuthError(null);
+                  }}
+                  className="text-xs text-slate-500 hover:text-slate-700 transition"
+                >
+                  ← Use a different email
+                </button>
+              </div>
             </div>
           ) : (
             <div className="space-y-6">
@@ -189,13 +333,18 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
 
                 <button
                   type="submit"
-                  disabled={isSubmitting || !isConfigured}
+                  disabled={isSubmitting || !isConfigured || cooldownSeconds > 0}
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md shadow-blue-500/20 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition"
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
                       <span>Sending link...</span>
+                    </>
+                  ) : cooldownSeconds > 0 ? (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      <span>Resend Link ({cooldownSeconds}s)</span>
                     </>
                   ) : (
                     <>
@@ -217,4 +366,4 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
       </div>
     </div>
   );
-};
+}
