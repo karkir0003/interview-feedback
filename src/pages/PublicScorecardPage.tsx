@@ -491,7 +491,7 @@ export function PublicScorecardPage() {
             <div className="flex items-center gap-2">
               <span className="text-xl">💸</span>
               <h3 className="text-base font-bold text-slate-900">
-                Enjoyed the session?
+                Loving MockSignal?
               </h3>
             </div>
             <p className="text-sm text-slate-700 leading-relaxed">
@@ -503,9 +503,9 @@ export function PublicScorecardPage() {
                 onClick={() => trackEvent('tip_button_clicked', { platform: 'stripe', source: 'inline_link' })}
                 className="font-semibold text-amber-900 underline underline-offset-2 hover:text-amber-950"
               >
-                tip
+                tip on Stripe
               </a>{' '}
-              — it helps support the time and care I put into each 1:1.
+              — it directly supports the care and effort I put into making this the go-to mock interview feedback platform.
             </p>
           </div>
           <a
