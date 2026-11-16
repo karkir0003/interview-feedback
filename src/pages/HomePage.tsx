@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Award, ShieldCheck, Zap, ArrowRight, BarChart3 } from 'lucide-react';
+import { GITHUB_REPO_URL } from '../lib/constants';
 
 export function HomePage() {
   const { user, isAdmin, isLoading } = useAuth();
@@ -43,7 +44,7 @@ export function HomePage() {
             <ArrowRight className="h-4 w-4" />
           </Link>
           <a
-            href="https://github.com/karkir0003/interview-feedback#readme"
+            href={GITHUB_REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm transition"

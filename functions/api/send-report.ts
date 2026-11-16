@@ -1,3 +1,9 @@
+import {
+  buildStripeTipUrl,
+  buildScorecardReportUrl,
+  buildCandidateHistoryLoginUrl,
+} from '../../src/lib/constants';
+
 interface Env {
   VITE_SUPABASE_URL?: string;
   SUPABASE_URL?: string;
@@ -9,6 +15,8 @@ interface Env {
   RESEND_FROM_EMAIL?: string;
   APP_URL?: string;
   VITE_APP_URL?: string;
+  STRIPE_TIP_URL?: string;
+  VITE_STRIPE_TIP_URL?: string;
 }
 
 interface SendReportPayload {
@@ -104,13 +112,16 @@ export const onRequestPost = async (context: {
       });
     }
 
-    const origin = new URL(request.url).origin;
+    const origin = env.VITE_APP_URL || env.APP_URL || new URL(request.url).origin;
     const cleanUrl = `${origin}/r/${publicToken}`;
-    const baseUtm = 'utm_source=mocksignal&utm_medium=email&utm_campaign=interview_evaluation';
-    const reportUrl = `${cleanUrl}?${baseUtm}&utm_content=view_scorecard_cta`;
-    const directUrl = `${cleanUrl}?${baseUtm}&utm_content=direct_url_link`;
-    const stripeTipUrl = `https://buy.stripe.com/00g4k40b0gLOcV25kk?${baseUtm}&utm_content=stripe_tip_email`;
-    const historyLoginUrl = `${origin}/login?redirect=%2Fhistory&${baseUtm}&utm_content=candidate_history_cta`;
+    const reportUrl = buildScorecardReportUrl(origin, publicToken, 'view_scorecard_cta');
+    const directUrl = buildScorecardReportUrl(origin, publicToken, 'direct_url_link');
+    const stripeTipUrl = buildStripeTipUrl(
+      'email',
+      'stripe_tip_email',
+      env.STRIPE_TIP_URL || env.VITE_STRIPE_TIP_URL
+    );
+    const historyLoginUrl = buildCandidateHistoryLoginUrl(origin, 'candidate_history_cta');
     const resendApiKey = env.RESEND_API_KEY;
 
     if (!resendApiKey) {

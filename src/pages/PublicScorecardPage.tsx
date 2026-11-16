@@ -7,6 +7,7 @@ import { HireabilityBadge, ScoreBadge, ScoreProgressBar } from '../components/co
 import { useToast } from '../components/common/Toast';
 import { useAuth } from '../contexts/AuthContext';
 import { trackEvent } from '../lib/analytics';
+import { buildStripeTipUrl } from '../lib/constants';
 import {
   Calendar,
   Share2,
@@ -56,6 +57,7 @@ export function PublicScorecardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const stripeTipUrl = useMemo(() => buildStripeTipUrl('web', 'stripe_tip_scorecard'), []);
 
   const toggleScale = (key: string) => {
     setExpandedScale((prev) => ({
@@ -494,7 +496,7 @@ export function PublicScorecardPage() {
             <p className="text-sm text-slate-700 leading-relaxed">
               Feel free to leave a{' '}
               <a
-                href="https://buy.stripe.com/00g4k40b0gLOcV25kk?utm_source=mocksignal&utm_medium=web&utm_campaign=candidate_scorecard&utm_content=stripe_tip_scorecard"
+                href={stripeTipUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('tip_button_clicked', { platform: 'stripe', source: 'inline_link' })}
@@ -506,7 +508,7 @@ export function PublicScorecardPage() {
             </p>
           </div>
           <a
-            href="https://buy.stripe.com/00g4k40b0gLOcV25kk?utm_source=mocksignal&utm_medium=web&utm_campaign=candidate_scorecard&utm_content=stripe_tip_scorecard"
+            href={stripeTipUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackEvent('tip_button_clicked', { platform: 'stripe', source: 'cta_button' })}
