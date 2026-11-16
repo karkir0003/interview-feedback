@@ -505,7 +505,7 @@ export function PublicScorecardPage() {
               >
                 tip on Stripe
               </a>{' '}
-              — it directly supports the care and effort I put into making this the go-to mock interview feedback platform.
+              — it directly supports the care and effort put into making MockSignal the go-to mock interview feedback platform.
             </p>
           </div>
           <a

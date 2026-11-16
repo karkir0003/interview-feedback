@@ -37,8 +37,8 @@ When creating the new Payment Link in your [Stripe Dashboard](https://dashboard.
 ### Step 3: Create Payment Link
 * **Navigation**: **Payment links** → **+ New**
 * Select the **MockSignal** product created above.
-* **Confirmation Page**: Show confirmation page (default Stripe message or custom redirect to `https://mocksignal.karkir0003.workers.dev`).
-* **Copy Link**: Generates a URL in the form of `https://buy.stripe.com/xxxxxxxxxxxxxx`.
+* **Confirmation Page**: Show confirmation page (default Stripe message or custom redirect to your platform URL, e.g. `https://your-domain.com`).
+* **Copy Link**: Generates a URL in the form of `https://buy.stripe.com/your_payment_link_id`.
 
 ---
 
@@ -48,7 +48,7 @@ When creating the new Payment Link in your [Stripe Dashboard](https://dashboard.
 * **Placement**: Callout card right below the feedback and action items sections.
 * **Headline**: `Loving MockSignal?`
 * **Body Copy**:
-  > Feel free to leave a **tip on Stripe** — it directly supports the care and effort I put into making this the go-to mock interview feedback platform.
+  > Feel free to leave a **tip on Stripe** — it directly supports the care and effort put into making MockSignal the go-to mock interview feedback platform.
 * **Button Text**: `Leave a Tip 💸`
 * **Link Target**:
   ```text
@@ -58,7 +58,7 @@ When creating the new Payment Link in your [Stripe Dashboard](https://dashboard.
 ### B. Transactional Evaluation Email ([`functions/api/send-report.ts`](file:///Users/karthik/Desktop/interview-feedback/functions/api/send-report.ts))
 * **Placement**: Callout box within the HTML email dispatched to candidates via Resend.
 * **Email Copy**:
-  > 💸 **Loving MockSignal?** Feel free to leave a [tip on Stripe](${stripeTipUrl}) — it directly supports the care I put into each evaluation and making this the go-to mock interview platform for candidates.
+  > 💸 **Loving MockSignal?** Feel free to leave a [tip on Stripe](${stripeTipUrl}) — it directly supports the care put into each evaluation and making MockSignal the go-to mock interview platform for candidates.
 * **Link Target**:
   ```text
   {STRIPE_TIP_URL}?utm_source=mocksignal&utm_medium=email&utm_campaign=interview_evaluation&utm_content=stripe_tip_email
@@ -77,11 +77,11 @@ Once the new Stripe URL is generated:
 
 1. **Update Constant ([`src/lib/constants.ts`](file:///Users/karthik/Desktop/interview-feedback/src/lib/constants.ts))**:
    ```ts
-   export const DEFAULT_STRIPE_TIP_URL = 'https://buy.stripe.com/cNi6oG6Wb5tlgNpfg93ks01';
+   export const DEFAULT_STRIPE_TIP_URL = 'https://buy.stripe.com/your_stripe_payment_link_id';
    ```
 2. **Update Environment Files**:
-   - [`.env.example`](file:///Users/karthik/Desktop/interview-feedback/.env.example): `VITE_STRIPE_TIP_URL=https://buy.stripe.com/cNi6oG6Wb5tlgNpfg93ks01`
-   - [`wrangler.json`](file:///Users/karthik/Desktop/interview-feedback/wrangler.json): `"STRIPE_TIP_URL": "https://buy.stripe.com/cNi6oG6Wb5tlgNpfg93ks01"`
+   - [`.env.example`](file:///Users/karthik/Desktop/interview-feedback/.env.example): `VITE_STRIPE_TIP_URL=https://buy.stripe.com/your_stripe_payment_link_id`
+   - [`wrangler.json`](file:///Users/karthik/Desktop/interview-feedback/wrangler.json): `"STRIPE_TIP_URL": "https://buy.stripe.com/your_stripe_payment_link_id"`
 3. **Verify Tests**:
    - Run `yarn test` to confirm URL builders and attribution parameter integrity.
 
