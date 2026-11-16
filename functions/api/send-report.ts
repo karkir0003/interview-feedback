@@ -106,7 +106,11 @@ export const onRequestPost = async (context: {
 
     const origin = new URL(request.url).origin;
     const cleanUrl = `${origin}/r/${publicToken}`;
-    const reportUrl = `${cleanUrl}?utm_source=email&utm_medium=feedback_report&utm_campaign=interview_evaluation`;
+    const baseUtm = 'utm_source=mocksignal&utm_medium=email&utm_campaign=interview_evaluation';
+    const reportUrl = `${cleanUrl}?${baseUtm}&utm_content=view_scorecard_cta`;
+    const directUrl = `${cleanUrl}?${baseUtm}&utm_content=direct_url_link`;
+    const stripeTipUrl = `https://buy.stripe.com/00g4k40b0gLOcV25kk?${baseUtm}&utm_content=stripe_tip_email`;
+    const historyLoginUrl = `${origin}/login?redirect=%2Fhistory&${baseUtm}&utm_content=candidate_history_cta`;
     const resendApiKey = env.RESEND_API_KEY;
 
     if (!resendApiKey) {
@@ -160,17 +164,17 @@ export const onRequestPost = async (context: {
             </div>
             <div style="background-color: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 18px; margin: 24px 0;">
               <p style="font-size: 13px; color: #78350f; margin: 0; line-height: 1.5;">
-                💸 <strong>Enjoyed the session?</strong> Feel free to leave a <a href="https://buy.stripe.com/00g4k40b0gLOcV25kk" style="color: #b45309; font-weight: 700; text-decoration: underline;">tip on Stripe</a> — it helps support the time and care I put into each 1:1.
+                💸 <strong>Enjoyed the session?</strong> Feel free to leave a <a href="${stripeTipUrl}" style="color: #b45309; font-weight: 700; text-decoration: underline;">tip on Stripe</a> — it helps support the time and care I put into each 1:1.
               </p>
             </div>
             <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 24px 0;">
               <p style="font-size: 13px; color: #475569; margin: 0; line-height: 1.5;">
-                💡 <strong>Track your progression:</strong> You can view this report anytime without logging in. If you complete multiple mock interviews, sign in at the platform using <strong>${candidateEmail}</strong> to view your longitudinal progression and historical rubrics.
+                💡 <strong>Track your progression:</strong> You can view this report anytime without logging in. If you complete multiple mock interviews, <a href="${historyLoginUrl}" style="color: #0284c7; font-weight: 600; text-decoration: underline;">sign in at the platform</a> using <strong>${candidateEmail}</strong> to view your longitudinal progression and historical rubrics.
               </p>
             </div>
             <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 28px 0;" />
             <p style="font-size: 12px; color: #94a3b8; margin: 0; line-height: 1.5; word-break: break-all;">
-              Direct link: <a href="${reportUrl}" style="color: #64748b; text-decoration: underline;">${cleanUrl}</a>
+              Direct link: <a href="${directUrl}" style="color: #64748b; text-decoration: underline;">${cleanUrl}</a>
             </p>
           </div>
         `,

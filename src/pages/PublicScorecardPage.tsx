@@ -229,7 +229,7 @@ export function PublicScorecardPage() {
               </div>
             </div>
             <Link
-              to="/login"
+              to="/login?redirect=/history"
               className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white text-blue-950 hover:bg-blue-50 shadow-sm transition shrink-0"
             >
               <span>Sign in with Email</span>
@@ -494,7 +494,7 @@ export function PublicScorecardPage() {
             <p className="text-sm text-slate-700 leading-relaxed">
               Feel free to leave a{' '}
               <a
-                href="https://buy.stripe.com/00g4k40b0gLOcV25kk"
+                href="https://buy.stripe.com/00g4k40b0gLOcV25kk?utm_source=mocksignal&utm_medium=web&utm_campaign=candidate_scorecard&utm_content=stripe_tip_scorecard"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('tip_button_clicked', { platform: 'stripe', source: 'inline_link' })}
@@ -506,7 +506,7 @@ export function PublicScorecardPage() {
             </p>
           </div>
           <a
-            href="https://buy.stripe.com/00g4k40b0gLOcV25kk"
+            href="https://buy.stripe.com/00g4k40b0gLOcV25kk?utm_source=mocksignal&utm_medium=web&utm_campaign=candidate_scorecard&utm_content=stripe_tip_scorecard"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackEvent('tip_button_clicked', { platform: 'stripe', source: 'cta_button' })}

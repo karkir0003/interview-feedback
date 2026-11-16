@@ -121,7 +121,7 @@ Cloudflare Worker deployments are filtered via path allowlists. An agent should 
 - **Event Naming**: Use snake_case names (`evaluation_published`, `tip_button_clicked`, `evaluation_email_resent`, `admin_scorecard_link_copied`).
 - **UTM Campaign Tagging**: All external links dispatched in automated emails must include standardized UTM parameters:
   ```text
-  ?utm_source=email&utm_medium=feedback_report&utm_campaign=interview_evaluation
+  ?utm_source=mocksignal&utm_medium=email&utm_campaign=interview_evaluation&utm_content={cta_name}
   ```
 - **Resend Tagging**: When dispatching transactional emails via the Resend API, include categorical metadata tags:
   ```json
