@@ -83,3 +83,4 @@ Once the new Stripe URL is generated:
    - [`wrangler.json`](file:///Users/karthik/Desktop/interview-feedback/wrangler.json): `"STRIPE_TIP_URL": "https://buy.stripe.com/your_new_link_id"`
 3. **Verify Tests**:
    - Run `yarn test` to confirm URL builders and attribution parameter integrity.
+
