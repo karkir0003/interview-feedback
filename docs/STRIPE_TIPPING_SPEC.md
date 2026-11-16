@@ -12,33 +12,7 @@ The goal of this specification is to:
 
 ## 2. Stripe Dashboard Configuration Guide
 
-When creating the new Payment Link in your [Stripe Dashboard](https://dashboard.stripe.com/):
-
-### Step 1: Create the Product
-* **Navigation**: **Product catalog** → **+ Add product**
-* **Name**: `MockSignal`
-* **Description**:
-  > *Support the care, time, and dedication put into calibrated 1:1 mock interview evaluations and making MockSignal the go-to feedback platform for engineers.*
-* **Image / Icon**:
-  - Upload `mocksignal-icon.png` (Stripe requires raster PNG/JPG; 512×512 recommended).
-* **Tax Category / Product Type**:
-  - Select **General - electronically supplied services** (or *Software as a service / Digital services*). Since MockSignal is a web software platform and not a registered 501(c)(3) charity, Stripe classifies platform tips and developer support under digital/online services.
-
-### Step 2: Configure Pricing Model
-* **Payment Type**: One-time payment
-* **Pricing Model**: **Customer chooses what to pay** (*Pay what you want*)
-* **Currency**: `USD ($)`
-* **Suggested Amounts (Presets)**:
-  - Preset 1: `$15` (e.g. *"Coffee on me ☕"*)
-  - Preset 2: `$25` (e.g. *"Session supporter 🚀"*)
-  - Preset 3: `$50` (e.g. *"Super supporter ⭐"*)
-* **Minimum amount**: `$5.00`
-
-### Step 3: Create Payment Link
-* **Navigation**: **Payment links** → **+ New**
-* Select the **MockSignal** product created above.
-* **Confirmation Page**: Show confirmation page (default Stripe message or custom redirect to your platform URL, e.g. `https://your-domain.com`).
-* **Copy Link**: Generates a URL in the form of `https://buy.stripe.com/your_payment_link_id`.
+Create payment link to MockSignal product on Stripe
 
 ---
 
