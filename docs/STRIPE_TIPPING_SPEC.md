@@ -20,7 +20,9 @@ When creating the new Payment Link in your [Stripe Dashboard](https://dashboard.
 * **Description**:
   > *Support the care, time, and dedication put into calibrated 1:1 mock interview evaluations and making MockSignal the go-to feedback platform for engineers.*
 * **Image / Icon**:
-  - Upload [`public/mocksignal-icon.svg`](file:///Users/karthik/Desktop/interview-feedback/public/mocksignal-icon.svg) (the official royal blue rounded square with white Award medal).
+  - Export and upload `mocksignal-icon.png` using [`public/export-icon.html`](file:///Users/karthik/Desktop/interview-feedback/public/export-icon.html) (Stripe requires raster PNG/JPG; 512×512 recommended).
+* **Tax Category / Product Type**:
+  - Select **General - electronically supplied services** (or *Software as a service / Digital services*). Since MockSignal is a web software platform and not a registered 501(c)(3) charity, Stripe classifies platform tips and developer support under digital/online services.
 
 ### Step 2: Configure Pricing Model
 * **Payment Type**: One-time payment
