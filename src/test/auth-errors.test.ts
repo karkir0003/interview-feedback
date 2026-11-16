@@ -31,3 +31,4 @@ describe('formatAuthError utility', () => {
     expect(error.message).toBe('Database error connecting to user store');
   });
 });
+

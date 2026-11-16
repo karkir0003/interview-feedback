@@ -43,3 +43,4 @@ export function formatAuthError(code: string, rawMessage: string): FormattedAuth
     message: rawMessage || 'Unable to authenticate with this link. Please request a new sign-in link.',
   };
 }
+

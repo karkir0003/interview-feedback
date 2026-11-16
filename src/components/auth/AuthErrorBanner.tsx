@@ -21,3 +21,4 @@ export function AuthErrorBanner({ error }: AuthErrorBannerProps) {
     </div>
   );
 }
+
