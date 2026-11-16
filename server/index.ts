@@ -14,6 +14,8 @@ interface WorkerEnv {
   RESEND_FROM_EMAIL?: string;
   APP_URL?: string;
   VITE_APP_URL?: string;
+  STRIPE_TIP_URL?: string;
+  VITE_STRIPE_TIP_URL?: string;
 }
 
 export default {

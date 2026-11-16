@@ -7,6 +7,7 @@ import { HireabilityBadge, ScoreBadge, ScoreProgressBar } from '../components/co
 import { useToast } from '../components/common/Toast';
 import { useAuth } from '../contexts/AuthContext';
 import { trackEvent } from '../lib/analytics';
+import { buildStripeTipUrl } from '../lib/constants';
 import {
   Calendar,
   Share2,
@@ -56,6 +57,7 @@ export function PublicScorecardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const stripeTipUrl = useMemo(() => buildStripeTipUrl('web', 'stripe_tip_scorecard'), []);
 
   const toggleScale = (key: string) => {
     setExpandedScale((prev) => ({
@@ -162,7 +164,7 @@ export function PublicScorecardPage() {
   }, [scorecard]);
 
   const handleCopyLink = () => {
-    const url = window.location.href;
+    const url = `${window.location.origin}/r/${token}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     trackEvent('scorecard_link_copied', {
@@ -229,7 +231,8 @@ export function PublicScorecardPage() {
               </div>
             </div>
             <Link
-              to="/login"
+              to="/login?redirect=/history"
+              onClick={() => trackEvent('scorecard_login_banner_clicked')}
               className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white text-blue-950 hover:bg-blue-50 shadow-sm transition shrink-0"
             >
               <span>Sign in with Email</span>
@@ -494,7 +497,7 @@ export function PublicScorecardPage() {
             <p className="text-sm text-slate-700 leading-relaxed">
               Feel free to leave a{' '}
               <a
-                href="https://buy.stripe.com/00g4k40b0gLOcV25kk"
+                href={stripeTipUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('tip_button_clicked', { platform: 'stripe', source: 'inline_link' })}
@@ -506,7 +509,7 @@ export function PublicScorecardPage() {
             </p>
           </div>
           <a
-            href="https://buy.stripe.com/00g4k40b0gLOcV25kk"
+            href={stripeTipUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackEvent('tip_button_clicked', { platform: 'stripe', source: 'cta_button' })}
