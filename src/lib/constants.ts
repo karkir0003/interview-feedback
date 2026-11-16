@@ -58,3 +58,4 @@ export function buildCandidateHistoryLoginUrl(
   url.searchParams.set('utm_content', content);
   return url.toString();
 }
+
